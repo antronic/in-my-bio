@@ -77,8 +77,13 @@ jobs:
         with:
           path: ${{ env.BUILD_PATH }}/dist
       - name: Deploy GitHub Pages site
-        uses: actions/deploy-pages@v4.0.5
-          
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact-path: ${{ env.BUILD_PATH }}/dist
+          site: ${{ steps.pages.outputs.origin }}
+          target-folder: ${{ steps.pages.outputs.base_path }}
+
 
   deploy:
     environment:
