@@ -1,0 +1,67 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+---
+
+<Layout title="Welcome to Astro.">
+	<main>
+		<div>
+			<div class="link-ig">
+				<div class="profile-img">
+					<img src="https://cdn.inflact.com/media/270193250_666278644534296_1709134089092816628_n.jpg?url=https%3A%2F%2Fscontent.cdninstagram.com%2Fv%2Ft51.2885-19%2F270193250_666278644534296_1709134089092816628_n.jpg%3Fstp%3Ddst-jpg_e0_s150x150%26_nc_ht%3Dscontent-del1-2.cdninstagram.com%26_nc_cat%3D100%26_nc_ohc%3DPOebfuWM1X4Q7kNvgGZ-Ji3%26_nc_gid%3Dac1809eeee354bbd88c83c8e45a93322%26edm%3DAOQ1c0wBAAAA%26ccb%3D7-5%26oh%3D00_AYBWTD07zJjDGGwjlscrQ_JgCYD8ncH6VTDoG7pbDEI0Iw%26oe%3D6705D9F5%26_nc_sid%3D8b3546&time=1728057600&key=3f9085a9c80875f870155ab3c108b138" alt="">
+				</div>
+				<a href="https://www.instagram.com/jobantronic/"><p>@jobantronic</p></a>
+			</div>
+
+			<h2 class="text-gradient">Links</h2>
+
+			<div class="grid-container">
+				<Card href="https://astro.build" title="Mini Screen 3.5inch IPS" body="Build faster websites with less client-side Javascript." img="/posts/01.gif" />
+			</div>
+		</div>
+	</main>
+</Layout>
+
+<style>
+	main {
+		margin: auto;
+		padding: 1rem;
+		width: 800px;
+		max-width: calc(100% - 2rem);
+		color: white;
+		font-size: 20px;
+		line-height: 1.6;
+	}
+	.link-ig a {
+		color: white;
+		text-align: center;
+	}
+	.link-ig .profile-img {
+		text-align: center;
+	}
+	.link-ig .profile-img img {
+		border-radius: 50%;
+	}
+
+	h1 {
+		font-size: 4rem;
+		font-weight: 700;
+		line-height: 1;
+		text-align: center;
+		margin-bottom: 1em;
+	}
+	.text-gradient {
+		background-image: var(--accent-gradient);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-size: 400%;
+		background-position: 0%;
+	}
+
+	.link-card-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
+		gap: 2rem;
+		padding: 0;
+	}
+</style>
