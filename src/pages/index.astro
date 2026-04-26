@@ -1,67 +1,69 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Card from '../components/Card.astro';
+import { Card, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+
+// Posts data - can be moved to JSON later
+const posts = [
+  {
+    title: "Mini Screen 3.5inch IPS",
+    description: "Mini display for your better productivity 😉",
+    url: "https://s.click.aliexpress.com/e/_omeZpYt",
+    image: "./posts/01.gif"
+  }
+];
 ---
 
-<Layout title="Welcome to Astro.">
-	<main>
-		<div>
-			<div class="link-ig">
-				<div class="profile-img">
-					<img src="https://cdn.inflact.com/media/270193250_666278644534296_1709134089092816628_n.jpg?url=https%3A%2F%2Fscontent.cdninstagram.com%2Fv%2Ft51.2885-19%2F270193250_666278644534296_1709134089092816628_n.jpg%3Fstp%3Ddst-jpg_e0_s150x150%26_nc_ht%3Dscontent-del1-2.cdninstagram.com%26_nc_cat%3D100%26_nc_ohc%3DPOebfuWM1X4Q7kNvgGZ-Ji3%26_nc_gid%3Dac1809eeee354bbd88c83c8e45a93322%26edm%3DAOQ1c0wBAAAA%26ccb%3D7-5%26oh%3D00_AYBWTD07zJjDGGwjlscrQ_JgCYD8ncH6VTDoG7pbDEI0Iw%26oe%3D6705D9F5%26_nc_sid%3D8b3546&time=1728057600&key=3f9085a9c80875f870155ab3c108b138" alt="">
-				</div>
-				<a href="https://www.instagram.com/jobantronic/"><p>@jobantronic</p></a>
-			</div>
+<Layout title="@job.jirachai | Links">
+  <div class="container mx-auto px-4 py-12 max-w-2xl">
+    <!-- Profile Section -->
+    <div class="text-center mb-12">
+      <div class="mx-auto w-24 h-24 mb-4">
+        <img 
+          src="/profile.jpg"
+          alt="@job.jirachai" 
+          class="w-full h-full rounded-full object-cover ring-4 ring-primary/10"
+        />
+      </div>
+      <a 
+        href="https://www.instagram.com/job.jirachai/" 
+        class="text-xl font-semibold hover:text-primary/80 transition-colors"
+      >
+        @job.jirachai
+      </a>
+    </div>
 
-			<h2 class="text-gradient">Links</h2>
+    <!-- Links Section -->
+    <div class="space-y-4">
+      <h2 class="text-lg font-medium text-muted-foreground mb-6 text-center">Links</h2>
+      
+      {posts.map((post) => (
+        <a href={post.url} target="_blank" rel="noopener noreferrer" class="block">
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer group">
+            <div class="flex">
+              <div class="w-24 h-24 flex-shrink-0">
+                <img 
+                  src={post.image} 
+                  alt={post.title}
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <CardHeader className="flex-1 py-4 px-4">
+                <CardTitle className="text-base group-hover:text-primary transition-colors">
+                  {post.title}
+                </CardTitle>
+                <CardDescription className="line-clamp-2">
+                  {post.description}
+                </CardDescription>
+              </CardHeader>
+            </div>
+          </Card>
+        </a>
+      ))}
+    </div>
 
-			<div class="grid-container">
-				<Card href="https://s.click.aliexpress.com/e/_omeZpYt" title="Mini Screen 3.5inch IPS" body="Mini display for your better productivity 😉" img="./posts/01.gif" />
-			</div>
-		</div>
-	</main>
+    <!-- Footer -->
+    <footer class="mt-12 text-center text-sm text-muted-foreground">
+      <p>© {new Date().getFullYear()} @job.jirachai</p>
+    </footer>
+  </div>
 </Layout>
-
-<style>
-	main {
-		margin: auto;
-		padding: 1rem;
-		width: 800px;
-		max-width: calc(100% - 2rem);
-		color: white;
-		font-size: 20px;
-		line-height: 1.6;
-	}
-	.link-ig a {
-		color: white;
-		text-align: center;
-	}
-	.link-ig .profile-img {
-		text-align: center;
-	}
-	.link-ig .profile-img img {
-		border-radius: 50%;
-	}
-
-	h1 {
-		font-size: 4rem;
-		font-weight: 700;
-		line-height: 1;
-		text-align: center;
-		margin-bottom: 1em;
-	}
-	.text-gradient {
-		background-image: var(--accent-gradient);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-size: 400%;
-		background-position: 0%;
-	}
-
-	.link-card-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
-		gap: 2rem;
-		padding: 0;
-	}
-</style>
