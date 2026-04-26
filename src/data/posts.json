@@ -5,14 +5,14 @@
       "title": "Bigme B7 Pro — E-Ink tablet",
       "description": "Bigme B7 Pro — Read, Write, and Take Notes in One Place, อ่าน เขียน และจดโน้ต ครบในเครื่องเดียว",
       "url": "https://s.shopee.co.th/9UxpyirPKb",
-      "image": "./posts/post-01.avif"
+      "image": "./posts/post-01.png"
     },
     {
       "id": "post-02",
       "title": "Demo Video",
-      "description": "Sample video converted to AVIF",
+      "description": "Sample video converted to GIF",
       "url": "https://example.com",
-      "image": "./posts/post-02.avif"
+      "image": "./posts/post-02.gif"
     }
   ]
 }
