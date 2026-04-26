@@ -1,1 +1,11 @@
-{"posts":[]}
+{
+  "posts": [
+    {
+      "id": "post-01",
+      "title": "Bigme B7 Pro — E-Ink tablet",
+      "description": "Bigme B7 Pro — Read, Write, and Take Notes in One Place, อ่าน เขียน และจดโน้ต ครบในเครื่องเดียว",
+      "url": "https://s.shopee.co.th/9UxpyirPKb",
+      "image": "./posts/post-01.avif"
+    }
+  ]
+}

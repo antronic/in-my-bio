@@ -14,9 +14,10 @@ test.describe('in-my-bio Homepage', () => {
     await expect(page.getByRole('link', { name: '@job.jirachai' })).toBeVisible();
   });
 
-  test('should display link cards', async ({ page }) => {
+  test('should display link cards from posts.json', async ({ page }) => {
     const cards = page.locator('a[target="_blank"]');
     await expect(cards.first()).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Bigme B7 Pro/i })).toBeVisible();
   });
 
   test('should have working links', async ({ page }) => {

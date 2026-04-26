@@ -1,16 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { Card, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import postsData from '../data/posts.json';
 
-// Posts data - can be moved to JSON later
-const posts = [
-  {
-    title: "Mini Screen 3.5inch IPS",
-    description: "Mini display for your better productivity 😉",
-    url: "https://s.click.aliexpress.com/e/_omeZpYt",
-    image: "./posts/01.gif"
-  }
-];
+// Posts from JSON
+const { posts } = postsData;
 ---
 
 <Layout title="@job.jirachai | Links">
