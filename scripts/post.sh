@@ -2,7 +2,7 @@
 
 # Post Creator for in-my-bio
 # Usage: post.sh create
-# Supports: PNG, JPG, GIF → GIF | MP4, MOV, WEBM → GIF (animated)
+# Supports: PNG, JPG, GIF, MP4, MOV, WEBM → AVIF (smallest size)
 
 POSTS_DIR=$(dirname $(dirname $0))/public/posts
 DATA_FILE=$(dirname $(dirname $0))/src/data/posts.json
@@ -14,7 +14,7 @@ CYAN='\033[0;36m'
 NC='\033[0m'
 
 get_next_number() {
-    local count=$(ls -1t "$POSTS_DIR"/*.gif 2>/dev/null | wc -l)
+    local count=$(ls -1t "$POSTS_DIR"/*.avif 2>/dev/null | wc -l)
     printf "%02d" $((count + 1))
 }
 
@@ -25,23 +25,16 @@ init_posts_data() {
     fi
 }
 
-convert_to_gif() {
+convert_to_avif() {
     local input=$1
     local output=$2
     
-    echo -e "${YELLOW}Converting to GIF...${NC}"
-    
-    # Check if input is video
-    if [[ "$input" =~ \.(mp4|mov|webm)$ ]]; then
-        ffmpeg -y -i "$input" -vf "fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen=stats_mode=diff[p];[s1][p]paletteuse=dither=bayer" -an "$output" 2>&1 | tail -2
-    else
-        # Image - copy as-is or convert
-        cp "$input" "$output"
-    fi
+    echo -e "${YELLOW}Converting to AVIF (smallest size)...${NC}"
+    ffmpeg -y -i "$input" -c:v libsvtav1 -crf 40 -an "$output" 2>&1 | tail -2
     
     if [ $? -eq 0 ] && [ -f "$output" ]; then
         local size=$(du -h "$output" | cut -f1)
-        echo -e "${GREEN}✓ GIF created: $(basename $output) ($size)${NC}"
+        echo -e "${GREEN}✓ AVIF created: $(basename $output) ($size)${NC}"
     else
         echo -e "${RED}✗ Conversion failed${NC}"
         return 1
@@ -71,10 +64,10 @@ create_post() {
     fi
     
     local num=$(get_next_number)
-    local output_name="post-$num.gif"
+    local output_name="post-$num.avif"
     local output_path="$POSTS_DIR/$output_name"
     
-    convert_to_gif "$input_path" "$output_path"
+    convert_to_avif "$input_path" "$output_path"
     
     local temp=$(mktemp)
     jq --arg id "post-$num" --arg title "$title" --arg desc "$description" --arg url "$url" --arg img "./posts/$output_name" \
@@ -110,6 +103,6 @@ case "$1" in
         echo "  post.sh create    - Create new post"
         echo "  post.sh list      - List all posts"
         echo ""
-        echo "Supported: PNG, JPG, GIF (copied) | MP4, MOV, WEBM (→ GIF)"
+        echo "Supported: PNG, JPG, GIF, MP4, MOV, WEBM → AVIF"
         ;;
 esac

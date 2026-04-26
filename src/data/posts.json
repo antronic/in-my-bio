@@ -10,9 +10,9 @@
     {
       "id": "post-02",
       "title": "Demo Video",
-      "description": "Sample video converted to GIF",
+      "description": "Sample video converted to AVIF",
       "url": "https://example.com",
-      "image": "./posts/post-02.gif"
+      "image": "./posts/post-02.avif"
     }
   ]
 }
