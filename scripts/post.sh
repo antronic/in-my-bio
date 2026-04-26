@@ -30,10 +30,11 @@ convert_to_avif() {
     local output=$2
     
     echo -e "${YELLOW}Converting to AVIF...${NC}"
-    ffmpeg -y -i "$input" -c:v libaom-av1 -crf 30 -pix_fmt yuva420p -an "$output" 2>&1 | tail -3
+    ffmpeg -y -i "$input" -c:v libsvtav1 -crf 45 -an "$output" 2>&1 | tail -2
     
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}✓ AVIF created: $(basename $output)${NC}"
+    if [ $? -eq 0 ] && [ -f "$output" ]; then
+        local size=$(du -h "$output" | cut -f1)
+        echo -e "${GREEN}✓ AVIF created: $(basename $output) ($size)${NC}"
     else
         echo -e "${RED}✗ Conversion failed${NC}"
         return 1
