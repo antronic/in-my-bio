@@ -1,0 +1,12 @@
+{
+  "name": "in-my-bio",
+  "path": ".",
+  "status": "active",
+  "tags": [
+    "link-in-bio",
+    "astro",
+    "static-site"
+  ],
+  "createdAt": "2026-04-25T08:20:13Z",
+  "updatedAt": "2026-04-25T08:20:27Z"
+}
