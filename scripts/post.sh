@@ -30,7 +30,7 @@ convert_to_avif() {
     local output=$2
     
     echo -e "${YELLOW}Converting to AVIF (smallest size)...${NC}"
-    ffmpeg -y -i "$input" -c:v libsvtav1 -crf 40 -an "$output" 2>&1 | tail -2
+    ffmpeg -y -i "$input" -vf "scale=480:-2" -c:v libsvtav1 -crf 35 -pix_fmt yuv420p -an "$output" 2>&1 | tail -2
     
     if [ $? -eq 0 ] && [ -f "$output" ]; then
         local size=$(du -h "$output" | cut -f1)
@@ -69,10 +69,16 @@ create_post() {
     
     convert_to_avif "$input_path" "$output_path"
     
+    # Add to BEGINNING of posts array (newest first)
     local temp=$(mktemp)
     jq --arg id "post-$num" --arg title "$title" --arg desc "$description" --arg url "$url" --arg img "./posts/$output_name" \
-        '.posts += [{"id": $id, "title": $title, "description": $desc, "url": $url, "image": $img}]' "$DATA_FILE" > "$temp"
-    mv "$temp" "$DATA_FILE"
+        '["$id", "$title", "$desc", "$url", "$img"] as $new | .posts = [split(",") | map({id: .[0], title: .[1], description: .[2], url: .[3], image: .[4]}) | map({id: .id, title: .title, description: .description, url: .url, image: .image}) | .[0] + .] | .posts = [$new] + .posts' "$DATA_FILE" > "$temp" || true
+    
+    # Simpler approach: prepend to array
+    local temp2=$(mktemp)
+    jq --arg id "post-$num" --arg title "$title" --arg desc "$description" --arg url "$url" --arg img "./posts/$output_name" \
+        '{posts: [{id: $id, title: $title, description: $desc, url: $url, image: $img}] + .posts}' "$DATA_FILE" > "$temp2"
+    mv "$temp2" "$DATA_FILE"
     
     echo ""
     echo -e "${GREEN}✓ Post created successfully!${NC}"
@@ -84,7 +90,7 @@ create_post() {
 
 list_posts() {
     init_posts_data
-    echo -e "${CYAN}=== Posts List ===${NC}"
+    echo -e "${CYAN}=== Posts List (Newest First) ===${NC}"
     jq -r '.posts[] | "[\(.id)] \(.title)\n  \(.description)\n  URL: \(.url)\n  Image: \(.image)\n"' "$DATA_FILE"
 }
 
