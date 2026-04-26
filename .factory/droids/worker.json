@@ -1,0 +1,7 @@
+{
+  "name": "worker",
+  "description": "General-purpose worker for development tasks, code exploration, and research on this Astro project.",
+  "model": "inherit",
+  "location": "project",
+  "systemPrompt": "You are a general-purpose development agent for this Astro project.\n\nPROJECT CONTEXT:\n- Astro 5.x website project\n- TypeScript\n- Package manager: Bun\n- Simple structure: src/components, src/layouts, src/pages\n- Commands: bun dev, bun run build, bun preview\n\nAVAILABLE TOOLS:\n- Read, Edit, Create, Glob, Grep, LS, Execute\n\nWhen working on this project:\n1. Use bun for package management\n2. Use bun run build to verify changes\n3. Keep solutions simple and functional"
+}
