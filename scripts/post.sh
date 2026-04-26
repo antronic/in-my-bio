@@ -2,12 +2,11 @@
 
 # Post Creator for in-my-bio
 # Usage: post.sh create
+# Supports: PNG, JPG, GIF, MP4, MOV, WEBM → AVIF conversion
 
-POSTS_DIR="/Users/Shared/dev/wwwj/projects/in-my-bio/public/posts"
-DATA_FILE="/Users/Shared/dev/wwwj/projects/in-my-bio/src/data/posts.json"
-INDEX_FILE="/Users/Shared/dev/wwwj/projects/in-my-bio/src/pages/index.astro"
+POSTS_DIR=$(dirname $(dirname $0))/public/posts
+DATA_FILE=$(dirname $(dirname $0))/src/data/posts.json
 
-# Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -15,7 +14,7 @@ CYAN='\033[0;36m'
 NC='\033[0m'
 
 get_next_number() {
-    local count=$(ls -1 "$POSTS_DIR" 2>/dev/null | wc -l)
+    local count=$(ls -1t "$POSTS_DIR"/*.avif 2>/dev/null | wc -l)
     printf "%02d" $((count + 1))
 }
 
@@ -26,45 +25,60 @@ init_posts_data() {
     fi
 }
 
+convert_to_avif() {
+    local input=$1
+    local output=$2
+    
+    echo -e "${YELLOW}Converting to AVIF...${NC}"
+    ffmpeg -y -i "$input" -c:v libaom-av1 -crf 30 -pix_fmt yuva420p -an "$output" 2>&1 | tail -3
+    
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}✓ AVIF created: $(basename $output)${NC}"
+    else
+        echo -e "${RED}✗ Conversion failed${NC}"
+        return 1
+    fi
+}
+
 create_post() {
     echo -e "${CYAN}=== Create New Post ===${NC}"
     echo ""
     
-    # Get post details
     read -p "Title: " title
     read -p "Description: " description
     read -p "URL (redirect URL): " url
-    echo ""
-    echo -e "${YELLOW}Image drop location:${NC} $POSTS_DIR"
-    echo -e "${YELLOW}Naming format:${NC} <number>.<ext> (e.g., 02.gif, 03.png)"
-    echo ""
-    read -p "Image filename (e.g., 02.gif): " img_name
     
-    # Validate image exists
-    if [ ! -f "$POSTS_DIR/$img_name" ]; then
-        echo -e "${RED}Error: Image not found at $POSTS_DIR/$img_name${NC}"
+    mkdir -p "$POSTS_DIR"
+    
+    echo ""
+    echo -e "${YELLOW}Supported formats:${NC} PNG, JPG, GIF, MP4, MOV, WEBM"
+    echo -e "${YELLOW}Drop file to:${NC} $POSTS_DIR"
+    echo ""
+    read -p "Input filename: " input_name
+    
+    local input_path="$POSTS_DIR/$input_name"
+    if [ ! -f "$input_path" ]; then
+        echo -e "${RED}Error: File not found at $input_path${NC}"
         return 1
     fi
     
-    # Get next number for ID
     local num=$(get_next_number)
-    local id="post-$num"
+    local output_name="post-$num.avif"
+    local output_path="$POSTS_DIR/$output_name"
     
-    # Add to posts.json
+    convert_to_avif "$input_path" "$output_path"
+    
     local temp=$(mktemp)
-    jq --arg id "$id" --arg title "$title" --arg desc "$description" --arg url "$url" --arg img "./posts/$img_name" \
-        '.posts += [{"id": $id, "title": $title, "description": $desc, "url": $url, "image": $img}]' \
-        "$DATA_FILE" > "$temp"
+    jq --arg id "post-$num" --arg title "$title" --arg desc "$description" --arg url "$url" --arg img "./posts/$output_name" \
+        '.posts += [{"id": $id, "title": $title, "description": $desc, "url": $url, "image": $img}]' "$DATA_FILE" > "$temp"
     mv "$temp" "$DATA_FILE"
     
     echo ""
     echo -e "${GREEN}✓ Post created successfully!${NC}"
-    echo "  ID: $id"
+    echo "  ID: post-$num"
     echo "  Title: $title"
     echo "  URL: $url"
-    echo "  Image: ./posts/$img_name"
-    echo ""
-    echo "Now update src/pages/index.astro with the new post, then run 'bun run build'"
+    echo "  Image: ./posts/$output_name"
 }
 
 list_posts() {
@@ -88,9 +102,6 @@ case "$1" in
         echo "  post.sh create    - Create new post"
         echo "  post.sh list      - List all posts"
         echo ""
-        echo "Workflow:"
-        echo "  1. Run: post.sh create"
-        echo "  2. Drop image to: $POSTS_DIR"
-        echo "  3. Enter image filename when prompted"
+        echo "Supported: PNG, JPG, GIF, MP4, MOV, WEBM → AVIF"
         ;;
 esac
